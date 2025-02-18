@@ -1,8 +1,10 @@
 import { getProduct } from '../../data/products.js';
 import { formatCurrency } from '../utils/money.js';
-import { deleteFromCart, displayInputSection, updateItemQuantity } from '../../data/cart.js';
+import { cart, cartQuantity, deleteFromCart, displayInputSection, updateItemQuantity } from '../../data/cart.js';
+import { getDeliveryDateString, } from '../../data/deliveryOptions.js';
 
 export function renderOrderSummary(cart) {
+    updateHeaderQuantity();
     let orderSummaryHTML = '';
     cart.forEach(cartItem => {
         orderSummaryHTML += generateOrderHTML(cartItem);
@@ -15,6 +17,7 @@ export function renderOrderSummary(cart) {
         .addEventListener('click', () => {
           // console.log(cart);
           deleteFromCart(cartItem.id);
+          updateHeaderQuantity();          
       });
 
       document.querySelector(`.update-quantity-link[data-product-id="${cartItem.id}"]`)
@@ -27,7 +30,20 @@ export function renderOrderSummary(cart) {
         .addEventListener('click', () => {
           // console.log(cart);
           updateItemQuantity(cartItem.id);
+          updateHeaderQuantity();
       });
+
+      document.querySelectorAll(`.delivery-option-input[data-product-id="${cartItem.id}"]`).forEach(radioButton => {
+        radioButton.addEventListener('click', () => {
+          let newOptionId = Number(radioButton.dataset.optionId);
+          cartItem.deliveryOptionId = newOptionId;
+
+          document.querySelector(`.js-delivery-date-${cartItem.id}`).innerText = `Delivery date: ${getDeliveryDateString(cartItem.deliveryOptionId)}`;
+
+          localStorage.setItem('cart', JSON.stringify(cart));
+        });
+      });
+
     });
     
 }
@@ -36,8 +52,8 @@ function generateOrderHTML(cartItem) {
     const product = getProduct(cartItem.id);
     let html = `
         <div class="cart-item-container" data-product-id="${product.id}">
-            <div class="delivery-date">
-              Delivery date: Wednesday, June 15
+            <div class="delivery-date js-delivery-date-${product.id}">
+              Delivery date: ${getDeliveryDateString(cartItem.deliveryOptionId)}
             </div>
 
             <div class="cart-item-details-grid">
@@ -72,11 +88,13 @@ function generateOrderHTML(cartItem) {
                 </div>
 
                 <div class="delivery-option">
-                  <input type="radio" checked class="delivery-option-input"
-                    name="delivery-option-${product.id}">
+                  <input type="radio" ${cartItem.deliveryOptionId===1 ? 'checked' : ''} class="delivery-option-input"
+                  name="delivery-option-${product.id}"
+                  data-option-id="1"
+                  data-product-id="${product.id}">
                   <div>
                     <div class="delivery-option-date">
-                      Tuesday, June 21
+                      ${getDeliveryDateString(1)}
                     </div>
                     <div class="delivery-option-price">
                       FREE Shipping
@@ -84,11 +102,13 @@ function generateOrderHTML(cartItem) {
                   </div>
                 </div>
                 <div class="delivery-option">
-                  <input type="radio" class="delivery-option-input"
-                    name="delivery-option-${product.id}">
+                  <input type="radio" ${cartItem.deliveryOptionId===2 ? 'checked' : ''} class="delivery-option-input"
+                  name="delivery-option-${product.id}"
+                  data-option-id="2"
+                  data-product-id="${product.id}">
                   <div>
                     <div class="delivery-option-date">
-                      Wednesday, June 15
+                      ${getDeliveryDateString(2)}
                     </div>
                     <div class="delivery-option-price">
                       $4.99 - Shipping
@@ -96,11 +116,13 @@ function generateOrderHTML(cartItem) {
                   </div>
                 </div>
                 <div class="delivery-option">
-                  <input type="radio" class="delivery-option-input"
-                    name="delivery-option-${product.id}">
+                  <input type="radio" ${cartItem.deliveryOptionId===3 ? 'checked' : ''} class="delivery-option-input"
+                  name="delivery-option-${product.id}"
+                  data-option-id="3 "
+                  data-product-id="${product.id}">
                   <div>
                     <div class="delivery-option-date">
-                      Monday, June 13
+                      ${getDeliveryDateString(3)}
                     </div>
                     <div class="delivery-option-price">
                       $9.99 - Shipping
@@ -112,4 +134,10 @@ function generateOrderHTML(cartItem) {
         </div>
     `;
     return html;
+}
+
+function updateHeaderQuantity(){
+  document.querySelector('.quantity-header').innerText = cartQuantity;
+
+  console.log(cartQuantity)
 }

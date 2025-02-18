@@ -17,6 +17,7 @@ export function addToCart(productId) {
     })
     if(!existsInCart){
         cart.push({
+            deliveryOptionId: 1,
             id: productId,
             quantity: selectorQuantity
         })
@@ -33,8 +34,10 @@ export function deleteFromCart(productId){
     cart.forEach((cartItem, index) => {
         if(cartItem.id === productId){
             cart.splice(index, 1);
+            cartQuantity -= cartItem.quantity;
         }
     });
+    localStorage.setItem('cart-quantity', cartQuantity);
     localStorage.setItem('cart', JSON.stringify(cart));
     document.querySelector(`.cart-item-container[data-product-id="${productId}"]`).remove();
 }
@@ -50,12 +53,18 @@ export function updateItemQuantity(productId) {
     
     document.querySelector(`.quantity-label[data-product-id="${productId}"]`).innerText = Number(inputEle.value);
 
+    let iniQ, newQ;
     cart.forEach(cartItem => {
         if(cartItem.id === productId){
-            cartItem.quantity = Number(inputEle.value);
+            iniQ = cartItem.quantity;
+            newQ = Number(inputEle.value);
+            cartItem.quantity = newQ;
         }
     });
 
+    let diff = newQ - iniQ;
+    cartQuantity += diff;
+    localStorage.setItem('cart-quantity', cartQuantity);
     localStorage.setItem('cart', JSON.stringify(cart));
     
     document.querySelector(`.cart-item-container[data-product-id="${productId}"]`).classList.remove('is-editing-quantity');
@@ -67,7 +76,11 @@ export function updateCartIcon() {
     cart.forEach(cartItem => {
        cartQuantity += cartItem.quantity; 
     });
-    document.querySelector('.js-cart-quantity').innerText = cartQuantity;
+    if(cartQuantity > 0){
+        document.querySelector('.js-cart-quantity').innerText = cartQuantity;
+    }else{
+        document.querySelector('.js-cart-quantity').innerText = '';
+    }
 }
 
 function displayAdded(productId) {
