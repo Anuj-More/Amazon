@@ -1,6 +1,6 @@
-import {getProduct} from '../../data/products.js';
+import { getProduct } from '../../data/products.js';
 import { formatCurrency } from '../utils/money.js';
-import { deleteFromCart } from '../../data/cart.js';
+import { deleteFromCart, displayInputSection, updateItemQuantity } from '../../data/cart.js';
 
 export function renderOrderSummary(cart) {
     let orderSummaryHTML = '';
@@ -16,6 +16,18 @@ export function renderOrderSummary(cart) {
           // console.log(cart);
           deleteFromCart(cartItem.id);
       });
+
+      document.querySelector(`.update-quantity-link[data-product-id="${cartItem.id}"]`)
+        .addEventListener('click', () => {
+          // console.log(cart);
+          displayInputSection(cartItem.id);
+      });
+
+      document.querySelector(`.save-quantity-link[data-product-id="${cartItem.id}"]`)
+        .addEventListener('click', () => {
+          // console.log(cart);
+          updateItemQuantity(cartItem.id);
+      });
     });
     
 }
@@ -23,7 +35,7 @@ export function renderOrderSummary(cart) {
 function generateOrderHTML(cartItem) {
     const product = getProduct(cartItem.id);
     let html = `
-        <div class="cart-item-container">
+        <div class="cart-item-container" data-product-id="${product.id}">
             <div class="delivery-date">
               Delivery date: Wednesday, June 15
             </div>
@@ -41,11 +53,13 @@ function generateOrderHTML(cartItem) {
                 </div>
                 <div class="product-quantity">
                   <span>
-                    Quantity: <span class="quantity-label">${cartItem.quantity}</span>
+                    Quantity: <span class="quantity-label" data-product-id="${product.id}">${cartItem.quantity}</span>
                   </span>
-                  <span class="update-quantity-link link-primary">
+                  <span class="update-quantity-link link-primary" data-product-id="${product.id}">
                     Update
                   </span>
+                  <input class="update-input" data-product-id="${product.id}">
+                  <span class="save-quantity-link link-primary" data-product-id="${product.id}">Save</span>
                   <span class="delete-quantity-link link-primary" data-product-id="${product.id}">
                     Delete
                   </span>
