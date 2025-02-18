@@ -1,7 +1,8 @@
 import { getProduct } from '../../data/products.js';
 import { formatCurrency } from '../utils/money.js';
-import { cart, cartQuantity, deleteFromCart, displayInputSection, updateItemQuantity } from '../../data/cart.js';
+import { cartQuantity, deleteFromCart, displayInputSection, updateItemQuantity } from '../../data/cart.js';
 import { getDeliveryDateString, } from '../../data/deliveryOptions.js';
+import { renderPaymentSummary } from './paymentSummary.js';
 
 export function renderOrderSummary(cart) {
     updateHeaderQuantity();
@@ -17,7 +18,8 @@ export function renderOrderSummary(cart) {
         .addEventListener('click', () => {
           // console.log(cart);
           deleteFromCart(cartItem.id);
-          updateHeaderQuantity();          
+          updateHeaderQuantity();
+          renderPaymentSummary(cart);   
       });
 
       document.querySelector(`.update-quantity-link[data-product-id="${cartItem.id}"]`)
@@ -31,6 +33,7 @@ export function renderOrderSummary(cart) {
           // console.log(cart);
           updateItemQuantity(cartItem.id);
           updateHeaderQuantity();
+          renderPaymentSummary(cart);
       });
 
       document.querySelectorAll(`.delivery-option-input[data-product-id="${cartItem.id}"]`).forEach(radioButton => {
@@ -39,6 +42,8 @@ export function renderOrderSummary(cart) {
           cartItem.deliveryOptionId = newOptionId;
 
           document.querySelector(`.js-delivery-date-${cartItem.id}`).innerText = `Delivery date: ${getDeliveryDateString(cartItem.deliveryOptionId)}`;
+
+          renderPaymentSummary(cart);
 
           localStorage.setItem('cart', JSON.stringify(cart));
         });

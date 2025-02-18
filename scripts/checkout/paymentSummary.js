@@ -3,9 +3,7 @@ import { getProduct } from "../../data/products.js";
 import { formatCurrency } from "../utils/money.js";
 
 
-export function renderPaymentSummary(cart) {
-    console.log('payment summary rendered');
-    
+export function renderPaymentSummary(cart) {    
     let itemsTotalCents = getItemsTotal(cart);
     let shippingCostCents = getShippingCost(cart);
     let totBeforeTaxCents = itemsTotalCents + shippingCostCents;
