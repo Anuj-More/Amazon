@@ -1,12 +1,23 @@
 import {getProduct} from '../../data/products.js';
 import { formatCurrency } from '../utils/money.js';
+import { deleteFromCart } from '../../data/cart.js';
 
 export function renderOrderSummary(cart) {
     let orderSummaryHTML = '';
     cart.forEach(cartItem => {
         orderSummaryHTML += generateOrderHTML(cartItem);
-    })
+    });
     document.querySelector('.order-summary').innerHTML = orderSummaryHTML;
+
+
+    cart.forEach(cartItem => {
+      document.querySelector(`.delete-quantity-link[data-product-id="${cartItem.id}"]`)
+        .addEventListener('click', () => {
+          // console.log(cart);
+          deleteFromCart(cartItem.id);
+      });
+    });
+    
 }
 
 function generateOrderHTML(cartItem) {
@@ -35,7 +46,7 @@ function generateOrderHTML(cartItem) {
                   <span class="update-quantity-link link-primary">
                     Update
                   </span>
-                  <span class="delete-quantity-link link-primary">
+                  <span class="delete-quantity-link link-primary" data-product-id="${product.id}">
                     Delete
                   </span>
                 </div>

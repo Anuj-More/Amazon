@@ -1,4 +1,4 @@
-import {getProduct} from "./products.js";
+import { renderOrderSummary } from "../scripts/checkout/orderSummary.js";
 
 export let cart = JSON.parse(localStorage.getItem('cart')) || [];
 
@@ -11,7 +11,6 @@ export function addToCart(productId) {
     cart.forEach(cartItem => {
         if(cartItem.id === productId){
             cartItem.quantity += selectorQuantity;
-            // cartQuantity += selectorQuantity;
             existsInCart = true;
             return;
         }
@@ -22,17 +21,30 @@ export function addToCart(productId) {
             quantity: selectorQuantity
         })
     }
-    cartQuantity += selectorQuantity;   
-
-    localStorage.setItem('cart', JSON.stringify(cart));
-    localStorage.setItem('cart-quantity', JSON.stringify(cartQuantity));
     
     updateCartIcon();
     displayAdded(productId);
-    // console.log(cart, cartQuantity);
+
+    localStorage.setItem('cart', JSON.stringify(cart));
+    localStorage.setItem('cart-quantity', JSON.stringify(cartQuantity));
+}
+
+export function deleteFromCart(productId){
+    cart.forEach((cartItem, index) => {
+        if(cartItem.id === productId){
+            cart.splice(index, 1);
+        }
+    });
+    localStorage.setItem('cart', JSON.stringify(cart));
+    renderOrderSummary(cart);
 }
 
 export function updateCartIcon() {
+    cartQuantity = 0;
+
+    cart.forEach(cartItem => {
+       cartQuantity += cartItem.quantity; 
+    });
     document.querySelector('.js-cart-quantity').innerText = cartQuantity;
 }
 
