@@ -1,13 +1,8 @@
 import {getProduct} from "./products.js";
 
-export const cart = [{
-    id: 'e43638ce-6aa0-4b85-b27f-e1d07eb678c6', 
-    quantity: 1
-}, {
-    id: '15b6fc6f-327a-4ec4-896f-486349e85a3d', 
-    quantity: 2
-}];
-let cartQuantity = 0;
+export let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+export let cartQuantity = JSON.parse(localStorage.getItem('cart-quantity')) || 0;
 let timeoutIds = [];
 
 export function addToCart(productId) {
@@ -28,13 +23,16 @@ export function addToCart(productId) {
         })
     }
     cartQuantity += selectorQuantity;   
+
+    localStorage.setItem('cart', JSON.stringify(cart));
+    localStorage.setItem('cart-quantity', JSON.stringify(cartQuantity));
     
     updateCartIcon();
     displayAdded(productId);
-    console.log(cart, cartQuantity);
+    // console.log(cart, cartQuantity);
 }
 
-function updateCartIcon() {
+export function updateCartIcon() {
     document.querySelector('.js-cart-quantity').innerText = cartQuantity;
 }
 

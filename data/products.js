@@ -1,4 +1,5 @@
 import {formatCurrency} from "../scripts/utils/money.js";
+import { updateCartIcon } from "./cart.js";
 
 export const products = [
   {
@@ -662,6 +663,8 @@ export const products = [
 ];
 
 export function renderProducts() {
+  updateCartIcon();
+  
   let html = ``;
   products.forEach(product => {
       html += generateProductHTML(product);
