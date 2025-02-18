@@ -1,15 +1,15 @@
 import dayjs from 'https://unpkg.com/dayjs@1.11.10/esm/index.js';
 
 export const deliveryOptions = [{
-    optionid: 1,
+    id: 1,
     time: 7,
     priceCents: 0
 }, {
-    optionid: 2,
+    id: 2,
     time: 3,
     priceCents: 499
 }, {
-    optionid: 3,
+    id: 3,
     time: 1,
     priceCents: 999
 }];
@@ -27,4 +27,13 @@ export function getDeliveryDateString(time) {
         default:
             return '';
     }
+}
+
+export function getDeliveryOption(optionId) {
+  let matchingOption;
+  deliveryOptions.forEach(option => {
+    if(option.id === optionId)
+        matchingOption = option;
+  })
+  return matchingOption;
 }
