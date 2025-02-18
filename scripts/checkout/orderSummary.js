@@ -138,6 +138,4 @@ function generateOrderHTML(cartItem) {
 
 function updateHeaderQuantity(){
   document.querySelector('.quantity-header').innerText = cartQuantity;
-
-  console.log(cartQuantity)
 }
