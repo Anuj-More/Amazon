@@ -1,5 +1,5 @@
 import {formatCurrency} from "../scripts/utils/money.js";
-import { updateCartIcon } from "./cart.js";
+import { getCartCount } from "./cart.js";
 
 export const products = [
   {
@@ -663,7 +663,13 @@ export const products = [
 ];
 
 export function renderProducts() {
-  updateCartIcon();
+  let cartCount = getCartCount();
+      
+  if(cartCount > 0){
+      document.querySelector('.js-cart-quantity').innerText = cartCount;
+  }else{
+      document.querySelector('.js-cart-quantity').innerText = '';
+  }
   
   let html = ``;
   products.forEach(product => {

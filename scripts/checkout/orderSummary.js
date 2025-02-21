@@ -1,6 +1,6 @@
 import { getProduct } from '../../data/products.js';
 import { formatCurrency } from '../utils/money.js';
-import { cartQuantity, deleteFromCart, displayInputSection, updateItemQuantity } from '../../data/cart.js';
+import { deleteFromCart, displayInputSection, getCartCount, updateItemQuantity } from '../../data/cart.js';
 import { getDeliveryDateString, } from '../../data/deliveryOptions.js';
 import { renderPaymentSummary } from './paymentSummary.js';
 
@@ -16,7 +16,6 @@ export function renderOrderSummary(cart) {
     cart.forEach(cartItem => {
       document.querySelector(`.delete-quantity-link[data-product-id="${cartItem.id}"]`)
         .addEventListener('click', () => {
-          // console.log(cart);
           deleteFromCart(cartItem.id);
           updateHeaderQuantity();
           renderPaymentSummary(cart);   
@@ -24,13 +23,11 @@ export function renderOrderSummary(cart) {
 
       document.querySelector(`.update-quantity-link[data-product-id="${cartItem.id}"]`)
         .addEventListener('click', () => {
-          // console.log(cart);
           displayInputSection(cartItem.id);
       });
 
       document.querySelector(`.save-quantity-link[data-product-id="${cartItem.id}"]`)
         .addEventListener('click', () => {
-          // console.log(cart);
           updateItemQuantity(cartItem.id);
           updateHeaderQuantity();
           renderPaymentSummary(cart);
@@ -142,5 +139,5 @@ function generateOrderHTML(cartItem) {
 }
 
 function updateHeaderQuantity(){
-  document.querySelector('.quantity-header').innerText = cartQuantity;
+  document.querySelector('.quantity-header').innerText = getCartCount();
 }
