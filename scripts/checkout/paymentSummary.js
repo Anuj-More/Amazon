@@ -1,3 +1,4 @@
+import { getCartCount } from "../../data/cart.js";
 import { getDeliveryOption } from "../../data/deliveryOptions.js";
 import { getProduct } from "../../data/products.js";
 import { formatCurrency } from "../utils/money.js";
@@ -12,6 +13,9 @@ export function renderPaymentSummary(cart) {
 
     const paymentSummaryHTML = generatePaymentHTML(itemsTotalCents, shippingCostCents, totBeforeTaxCents, taxCents, grandTotCents);
     document.querySelector('.payment-summary').innerHTML = paymentSummaryHTML;
+
+    let cartCount = getCartCount();
+    document.querySelector('.items-count').innerText = cartCount;
 };
 
 function generatePaymentHTML(itemsTotalCents, shippingCostCents, totBeforeTaxCents, taxCents, grandTotCents) {
@@ -21,7 +25,7 @@ function generatePaymentHTML(itemsTotalCents, shippingCostCents, totBeforeTaxCen
         </div>
 
         <div class="payment-summary-row">
-        <div class="item-count">Items (3):</div>
+        <div class="item-count">Items (<span class="items-count"></span>):</div>
         <div class="payment-summary-money">${formatCurrency(itemsTotalCents)}</div>
         </div>
 
