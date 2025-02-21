@@ -1,5 +1,29 @@
-import {formatCurrency} from "../scripts/utils/money.js";
+import { formatCurrency } from "../scripts/utils/money.js";
 import { getCartCount } from "./cart.js";
+
+class Product {
+  id;
+  image;
+  name;
+  rating;
+  priceCents;
+
+  constructor(productDetails) {
+    this.id = productDetails.id;
+    this.image = productDetails.image;
+    this.name = productDetails.name;
+    this.rating = productDetails.rating;
+    this.priceCents = productDetails.priceCents;  
+  }
+
+  getStarsUrl(){
+    return `images/ratings/rating-${this.rating.stars * 10}.png`;
+  }
+
+  getPrice() {
+    return `$${formatCurrency(this.priceCents)}`;
+  }
+}
 
 export const products = [
   {
@@ -660,23 +684,25 @@ export const products = [
       "mens"
     ]
   }
-];
+].map((productDetails) => {
+  return new Product(productDetails);
+});
 
 export function renderProducts() {
+  let html = ``;
+  products.forEach(product => {
+      html += generateProductHTML(product);
+  });
+  document.querySelector('.products-grid').innerHTML = html;
+
+
   let cartCount = getCartCount();
-      
   if(cartCount > 0){
       document.querySelector('.js-cart-quantity').innerText = cartCount;
   }else{
       document.querySelector('.js-cart-quantity').innerText = '';
   }
   
-  let html = ``;
-  products.forEach(product => {
-      html += generateProductHTML(product);
-  });
-  
-  document.querySelector('.products-grid').innerHTML = html;
 }
 
 function generateProductHTML(product) {
@@ -693,14 +719,14 @@ function generateProductHTML(product) {
 
         <div class="product-rating-container">
           <img class="product-rating-stars"
-            src="images/ratings/rating-${product.rating.stars * 10}.png">
+            src=${product.getStarsUrl()}>
           <div class="product-rating-count link-primary">
             ${product.rating.count}
           </div>
         </div>
 
         <div class="product-price">
-          $${formatCurrency(product.priceCents)}
+          ${product.getPrice()}
         </div>
 
         <div class="product-quantity-container">
