@@ -1,9 +1,20 @@
 import { renderOrderSummary } from "../scripts/checkout/orderSummary.js";
 
-export let cart = JSON.parse(localStorage.getItem('cart')) || [];
-
-export let cartQuantity = JSON.parse(localStorage.getItem('cart-quantity')) || 0;
+export let cart = undefined;
+export let cartQuantity = undefined;
 let timeoutIds = [];
+
+loadFromStorage();
+
+function loadFromStorage() {
+    cart = JSON.parse(localStorage.getItem('cart')) || [];
+    cartQuantity = JSON.parse(localStorage.getItem('cart-quantity')) || 0
+}
+
+function saveToStorage() {
+    localStorage.setItem('cart', JSON.stringify(cart));
+    localStorage.setItem('cart-quantity', JSON.stringify(cartQuantity));
+}
 
 export function addToCart(productId) {
     const selectorQuantity = Number(document.querySelector(`select[data-product-id="${productId}"]`).value);
@@ -26,8 +37,7 @@ export function addToCart(productId) {
     updateCartIcon();
     displayAdded(productId);
 
-    localStorage.setItem('cart', JSON.stringify(cart));
-    localStorage.setItem('cart-quantity', JSON.stringify(cartQuantity));
+    saveToStorage();
 }
 
 export function deleteFromCart(productId){
@@ -37,8 +47,8 @@ export function deleteFromCart(productId){
             cartQuantity -= cartItem.quantity;
         }
     });
-    localStorage.setItem('cart-quantity', cartQuantity);
-    localStorage.setItem('cart', JSON.stringify(cart));
+    
+    saveToStorage();
     document.querySelector(`.cart-item-container[data-product-id="${productId}"]`).remove();
 }
 
@@ -64,8 +74,7 @@ export function updateItemQuantity(productId) {
 
     let diff = newQ - iniQ;
     cartQuantity += diff;
-    localStorage.setItem('cart-quantity', cartQuantity);
-    localStorage.setItem('cart', JSON.stringify(cart));
+    saveToStorage();
     
     document.querySelector(`.cart-item-container[data-product-id="${productId}"]`).classList.remove('is-editing-quantity');
 }
