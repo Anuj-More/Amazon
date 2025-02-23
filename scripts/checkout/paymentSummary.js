@@ -1,10 +1,10 @@
-import { getCartCount } from "../../data/cart.js";
+import { cart, getCartCount } from "../../data/cart.js";
 import { getDeliveryOption } from "../../data/deliveryOptions.js";
 import { getProduct } from "../../data/products.js";
 import { formatCurrency } from "../utils/money.js";
 
 
-export function renderPaymentSummary(cart) {    
+export function renderPaymentSummary() {    
     let itemsTotalCents = getItemsTotal(cart);
     let shippingCostCents = getShippingCost(cart);
     let totBeforeTaxCents = itemsTotalCents + shippingCostCents;

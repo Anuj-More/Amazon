@@ -1,10 +1,10 @@
 import { getProduct } from '../../data/products.js';
-import { formatCurrency } from '../utils/money.js';
+import { cart } from '../../data/cart.js';
 import { deleteFromCart, displayInputSection, getCartCount, updateItemQuantity } from '../../data/cart.js';
 import { getDeliveryDateString, } from '../../data/deliveryOptions.js';
 import { renderPaymentSummary } from './paymentSummary.js';
 
-export function renderOrderSummary(cart) {
+export function renderOrderSummary() {
     updateHeaderQuantity();
     let orderSummaryHTML = '';
     cart.forEach(cartItem => {
